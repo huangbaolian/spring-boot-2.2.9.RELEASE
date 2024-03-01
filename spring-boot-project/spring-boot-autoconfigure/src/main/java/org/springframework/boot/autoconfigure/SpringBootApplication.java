@@ -45,22 +45,22 @@ import org.springframework.data.repository.Repository;
  * @author Andy Wilkinson
  * @since 1.2.0
  */
-@Target(ElementType.TYPE)//注解的使用范围，Type表示注解可以描述在类接口，注解或枚举中
-@Retention(RetentionPolicy.RUNTIME)//表示注解的生命周期，Runtime运行时
-@Documented //表示注解可以记录在javadoc中
-@Inherited//表示可以被子类继承该注解
+@Target(ElementType.TYPE) // 注解的使用范围，Type表示注解可以描述在类接口，注解或枚举中
+@Retention(RetentionPolicy.RUNTIME) // 表示注解的生命周期，Runtime运行时
+@Documented // 表示注解可以记录在javadoc中
+@Inherited // 表示可以被子类继承该注解
 // ----------------------------
-@SpringBootConfiguration//标明该类为配置类
-@EnableAutoConfiguration//启动自动配置功能，告诉SpringBoot开启自动配置功能，这样自动配置才能生效
+@SpringBootConfiguration // 标明该类为配置类
+@EnableAutoConfiguration // 启动自动配置功能，告诉SpringBoot开启自动配置功能，这样自动配置才能生效
 @ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
-		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })//注解扫描：当前@ComponentScan注解没有标注basePackages即value,所以扫描路径默认为@ComponentScan注解的类所在的包为基本扫描路径
+		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) }) // 注解扫描：当前@ComponentScan注解没有标注basePackages即value,所以扫描路径默认为@ComponentScan注解的类所在的包为基本扫描路径
 public @interface SpringBootApplication {
 
 	/**
 	 * Exclude specific auto-configuration classes such that they will never be applied.
 	 * @return the classes to exclude
 	 */
-	//根据class来排除特定的类，使其不能加入spring容器，传入参数value类型是class类型
+	// 根据class来排除特定的类，使其不能加入spring容器，传入参数value类型是class类型
 	@AliasFor(annotation = EnableAutoConfiguration.class)
 	Class<?>[] exclude() default {};
 
@@ -70,7 +70,7 @@ public @interface SpringBootApplication {
 	 * @return the class names to exclude
 	 * @since 1.3.0
 	 */
-	//根据classname来排除特定的类，使其不能加入spring容器，传入参数value类型是class的全类名字字符串数组
+	// 根据classname来排除特定的类，使其不能加入spring容器，传入参数value类型是class的全类名字字符串数组
 	@AliasFor(annotation = EnableAutoConfiguration.class)
 	String[] excludeName() default {};
 
