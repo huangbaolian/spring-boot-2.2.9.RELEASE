@@ -325,7 +325,7 @@ public class SpringApplication {
 			configureIgnoreBeanInfo(environment);
 			// 打印banner
 			Banner printedBanner = printBanner(environment);
-			// 【3.初始化应用上下文】
+			// 【3.初始化应用上下文-当前环境的属性集合】
 			context = createApplicationContext();
 			// 实例化SpringBootExceptionReporter.class用来支持报告关于启动的错误
 			exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
@@ -509,7 +509,9 @@ public class SpringApplication {
 			ConversionService conversionService = ApplicationConversionService.getSharedInstance();
 			environment.setConversionService((ConfigurableConversionService) conversionService);
 		}
+		//将main函数的args封装成SimpleCommandLinePropertySource加入环境中
 		configurePropertySources(environment, args);
+		//激活相应的配置文件
 		configureProfiles(environment, args);
 	}
 
