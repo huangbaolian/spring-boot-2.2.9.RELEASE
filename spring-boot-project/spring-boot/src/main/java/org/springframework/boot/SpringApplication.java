@@ -330,9 +330,9 @@ public class SpringApplication {
 			// 实例化SpringBootExceptionReporter.class用来支持报告关于启动的错误
 			exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
 					new Class[] { ConfigurableApplicationContext.class }, context);
-			// 【4.刷新应用上下文前的准备阶段】
+			// 【4.刷新应用上下文前的准备阶段-完成环境属性值的设置以及一些bean对象创建】
 			prepareContext(context, environment, listeners, applicationArguments, printedBanner);
-			// 【5.刷新应用上下文】
+			// 【5.刷新应用上下文!!】
 			refreshContext(context);
 			// 【6.刷新应用上下文后的扩展接口】
 			afterRefresh(context, applicationArguments);
@@ -391,9 +391,12 @@ public class SpringApplication {
 
 	private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
 			SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+		//设置容器环境
 		context.setEnvironment(environment);
+		//执行容器后置处理
 		postProcessApplicationContext(context);
 		applyInitializers(context);
+		//向各个监听器发送容器已经准备好的事件
 		listeners.contextPrepared(context);
 		if (this.logStartupInfo) {
 			logStartupInfo(context.getParent() == null);
@@ -401,6 +404,7 @@ public class SpringApplication {
 		}
 		// Add boot specific singleton beans
 		ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+		//将main函数中的args参数封装成单例bean,注册进容器
 		beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
 		if (printedBanner != null) {
 			beanFactory.registerSingleton("springBootBanner", printedBanner);
@@ -415,7 +419,9 @@ public class SpringApplication {
 		// Load the sources
 		Set<Object> sources = getAllSources();
 		Assert.notEmpty(sources, "Sources must not be empty");
+		//加载我们的启动类，将启动类注入容器
 		load(context, sources.toArray(new Object[0]));
+		//发布容器已加载事件
 		listeners.contextLoaded(context);
 	}
 
@@ -618,6 +624,14 @@ public class SpringApplication {
 						"Unable create a default ApplicationContext, please specify an ApplicationContextClass", ex);
 			}
 		}
+		/**
+		 * 下面这个方法不仅初始化了AnnotationConfigServletWebServerApplicationContext类，
+		 * 也是我们的上下文context，同样也出发了GenericApplicationContext类的构造函数，从而IOC容器也创建了
+		 *
+		 * beanFactory正是在AnnotationConfigServletWebServerApplicationContext实现的接口GenericApplicationContext中定义的
+		 *
+		 * 返回中的context中DefaultListableBeanFactory就是IOC容器的真面目，在后面的refresh方法中这个DefaultListableBeanFactory无处不在
+		 */
 		return (ConfigurableApplicationContext) BeanUtils.instantiateClass(contextClass);
 	}
 
@@ -640,6 +654,7 @@ public class SpringApplication {
 			}
 		}
 		if (this.addConversionService) {
+			//设置转换器
 			context.getBeanFactory().setConversionService(ApplicationConversionService.getSharedInstance());
 		}
 	}
@@ -652,6 +667,7 @@ public class SpringApplication {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void applyInitializers(ConfigurableApplicationContext context) {
+		//遍历初始化器
 		for (ApplicationContextInitializer initializer : getInitializers()) {
 			Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
 					ApplicationContextInitializer.class);
@@ -711,6 +727,7 @@ public class SpringApplication {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Loading source " + StringUtils.arrayToCommaDelimitedString(sources));
 		}
+		//创建BeanDefinitionLoader
 		BeanDefinitionLoader loader = createBeanDefinitionLoader(getBeanDefinitionRegistry(context), sources);
 		if (this.beanNameGenerator != null) {
 			loader.setBeanNameGenerator(this.beanNameGenerator);
@@ -750,6 +767,8 @@ public class SpringApplication {
 	 * Get the bean definition registry.
 	 * @param context the application context
 	 * @return the BeanDefinitionRegistry if it can be determined
+	 * spring容器在启动的时候，会将类解析成spring内部的beanDefinition结构，并将beanDefinition存储到DefaultListableBeanFactory的map中
+	 * BeanDefinitionRegistry中有一个方法void registerBeanDefinition作用是将beanDefinition注册到DefaultListableBeanFactory的map中
 	 */
 	private BeanDefinitionRegistry getBeanDefinitionRegistry(ApplicationContext context) {
 		if (context instanceof BeanDefinitionRegistry) {

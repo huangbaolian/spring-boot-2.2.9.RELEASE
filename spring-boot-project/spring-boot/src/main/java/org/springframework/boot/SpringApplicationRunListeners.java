@@ -41,25 +41,25 @@ class SpringApplicationRunListeners {
 		this.log = log;
 		this.listeners = new ArrayList<>(listeners);
 	}
-
+	//在run方法开始执行时，该方法立即被调用，可用于在初始化最早期时候做一些工作
 	void starting() {
 		for (SpringApplicationRunListener listener : this.listeners) {
 			listener.starting();
 		}
 	}
-
+	//当environment构建完成，ApplicationContext创建之前，该方法调用
 	void environmentPrepared(ConfigurableEnvironment environment) {
 		for (SpringApplicationRunListener listener : this.listeners) {
 			listener.environmentPrepared(environment);
 		}
 	}
-
+	//当ApplicationContext构建完成时，该方法被调用
 	void contextPrepared(ConfigurableApplicationContext context) {
 		for (SpringApplicationRunListener listener : this.listeners) {
 			listener.contextPrepared(context);
 		}
 	}
-
+	//当ApplicationContext完成加载，当没有被刷新前，该方法调用
 	void contextLoaded(ConfigurableApplicationContext context) {
 		for (SpringApplicationRunListener listener : this.listeners) {
 			listener.contextLoaded(context);
