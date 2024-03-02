@@ -17,15 +17,34 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+<!--		将它移除掉-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					&lt;!&ndash;移除spring-boot-starter-web中的tomcat&ndash;&gt;-->
+<!--					<artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--					<groupId>org.springframework.boot</groupId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
 		</dependency>
 
+<!--		引入的其它的容器-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-jetty</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.test</groupId>
+			<artifactId>test-spring-boot-starter</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
