@@ -175,6 +175,7 @@ public class ServletRegistrationBean<T extends Servlet> extends DynamicRegistrat
 	@Override
 	protected ServletRegistration.Dynamic addRegistration(String description, ServletContext servletContext) {
 		String name = getServletName();
+		//关键代码，servlet3.0需要将servlet实例添加到servletContext中，这样才能提供请求服务
 		return servletContext.addServlet(name, this.servlet);
 	}
 
